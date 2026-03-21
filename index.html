@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mafer 🌻❤️</title>
+    <style>
+        :root {
+            --bg-dark: #1a000a;
+            --bg-bright: #660a24;
+            --sunflower: #ffda00;
+            --stem-color: #3e2723;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, var(--bg-bright), var(--bg-dark));
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .falling-flowers-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .falling-flower {
+            position: absolute;
+            color: var(--sunflower);
+            user-select: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        .firework-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: explode 2.5s ease-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 white; }
+            100% { transform: scale(25); opacity: 0; box-shadow: 0 0 15px white; }
+        }
+
+        .canvas {
+            position: relative;
+            width: 300px;
+            height: 320px;
+            z-index: 10;
+            margin-bottom: 10px;
+        }
+
+        .trunk {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 8px;
+            height: 0;
+            background: var(--stem-color);
+            border-radius: 10px;
+            transform: translateX(-50%);
+            animation: growTrunk 2s ease-out forwards;
+        }
+
+        @keyframes growTrunk { to { height: 110px; } }
+
+        .heart-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+        }
+
+        .sunflower-heart {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--sunflower);
+            border-radius: 50%;
+            box-shadow: 0 0 8px #fff700;
+            opacity: 0;
+            transform: scale(0);
+            animation: bloom 1s ease-out forwards;
+        }
+
+        @keyframes bloom { 
+            0% { opacity: 0; transform: scale(0); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .messages {
+            position: relative;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            max-width: 90%;
+            line-height: 1.6;
+        }
+
+        .main-love {
+            font-size: 1.4rem;
+            color: var(--sunflower);
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 218, 0, 0.7);
+        }
+
+        .phrase {
+            font-size: 0.95rem;
+            margin: 10px 0;
+            display: block;
+        }
+
+        .love-you {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ff4d6d;
+            margin-top: 10px;
+            display: block;
+        }
+
+        #timer {
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            color: #ffd1d1;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="falling-flowers-container" id="falling-flowers"></div>
+    <div class="firework-container" id="fireworks"></div>
+    
+    <div class="canvas">
+        <div class="trunk"></div>
+        <div id="heart" class="heart-container"></div>
+    </div>
+
+    <div class="messages">
+        <div class="main-love">Flores Amarillas para el amor de mi vida: "Mafer"❤️😍</div>
+        
+        <span class="phrase">Si supiera elegir un lugar seguro, sería a tu lado.</span>
+        
+        <span class="phrase">Cuanto más tiempo estoy contigo más te amo.</span>
+        
+        <span class="phrase">--- ❤️ I Love You ❤️ ---</span>
+        
+        <div id="timer">Calculando...</div>
+    </div>
+
+    <script>
+        const startDate = new Date(2026, 1, 24, 18, 30, 0);
+        const TOTAL_FALLING_FLOWERS = 80;
+        const TOTAL_HEART_FLOWERS = 150;
+
+        const heartContainer = document.getElementById('heart');
+        for (let i = 0; i < TOTAL_HEART_FLOWERS; i++) {
+            const flower = document.createElement('div');
+            flower.className = 'sunflower-heart';
+            const t = Math.PI * 2 * (i / TOTAL_HEART_FLOWERS);
+            const x = 90 + 70 * (16 * Math.pow(Math.sin(t), 3)) / 16;
+            const y = 80 - 70 * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) / 16;
+            flower.style.left = `${x}px`;
+            flower.style.top = `${y}px`;
+            flower.style.animationDelay = `${2 + (i * 0.02)}s`;
+            heartContainer.appendChild(flower);
+        }
+
+        const fallingContainer = document.getElementById('falling-flowers');
+        for (let i = 0; i < TOTAL_FALLING_FLOWERS; i++) {
+            const f = document.createElement('div');
+            f.className = 'falling-flower';
+            f.innerHTML = '🌻';
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.top = `-${Math.random() * 100}vh`;
+            f.style.fontSize = `${Math.random() * 15 + 15}px`;
+            f.style.animationDuration = `${Math.random() * 5 + 4}s`;
+            f.style.animationDelay = `${Math.random() * 5}s`;
+            f.style.opacity = Math.random() * 0.7 + 0.3;
+            fallingContainer.appendChild(f);
+        }
+
+        function createFirework() {
+            const fw = document.createElement('div');
+            fw.className = 'firework';
+            const colors = ['#ff1744', '#fff176', '#00e676', '#29b6f6', '#eeeeee'];
+            fw.style.background = colors[Math.floor(Math.random() * colors.length)];
+            fw.style.left = Math.random() * 100 + 'vw';
+            fw.style.top = Math.random() * 100 + 'vh';
+            document.getElementById('fireworks').appendChild(fw);
+            setTimeout(() => fw.remove(), 2500);
+        }
+        setInterval(createFirework, 1500);
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+            if (diff < 0) {
+                document.getElementById('timer').innerHTML = "¡Nuestro momento comienza pronto! ❤️";
+                return;
+            }
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff / 3600000) % 24);
+            const m = Math.floor((diff / 60000) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            document.getElementById('timer').innerHTML = 
+                `Llevamos juntos:<br>${d} días, ${h}h ${m}m ${s}s`;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>
