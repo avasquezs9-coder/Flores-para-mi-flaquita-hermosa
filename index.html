@@ -126,9 +126,10 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             max-width: 88%;
-            max-height: 55vh; 
+            max-height: 65vh; /* Aumentado un poco para dar espacio a la foto grande */
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Para que el scroll interno funcione bien */
         }
 
         .main-love {
@@ -136,6 +137,7 @@
             color: var(--sunflower);
             font-weight: bold;
             margin-bottom: 5px;
+            flex-shrink: 0;
         }
 
         #timer {
@@ -145,19 +147,21 @@
             color: #ffd1d1;
             border-bottom: 1px solid rgba(255,255,255,0.2);
             padding-bottom: 10px;
+            flex-shrink: 0;
         }
 
-        /* DISEÑO REVISADO PARA EL CARRUSEL */
+        /* --- CORRECCIÓN: CONTENEDOR DEL CARRUSEL MÁS GRANDE --- */
         .carrusel-container {
-            width: 110px;
-            height: 110px;
-            margin: 5px auto 12px auto;
+            width: 220px; /* Tamaño duplicado (antes 110px) */
+            height: 220px; /* Tamaño duplicado (antes 110px) */
+            margin: 10px auto 15px auto;
             position: relative;
             border-radius: 50%;
-            border: 3px solid var(--sunflower);
-            box-shadow: 0 0 15px rgba(255, 218, 0, 0.4);
+            border: 4px solid var(--sunflower); /* Borde un poco más grueso */
+            box-shadow: 0 0 20px rgba(255, 218, 0, 0.6);
             overflow: hidden;
             background-color: rgba(0,0,0,0.2);
+            flex-shrink: 0; /* Evita que se comprima */
         }
 
         .carrusel-foto {
@@ -181,6 +185,7 @@
             text-align: left;
             padding-right: 5px;
             margin-top: 5px;
+            flex-grow: 1; /* Ocupa el espacio restante */
         }
 
         .rules-wrapper::-webkit-scrollbar {
@@ -198,6 +203,7 @@
             margin-bottom: 10px;
             font-size: 0.9rem;
             text-transform: uppercase;
+            flex-shrink: 0;
         }
 
         .rule-item {
@@ -273,27 +279,41 @@
     </div>
 
     <script>
-        const fechaInicio = new Date(2026, 1, 24, 18, 30, 0); 
+        // --- CONFIGURACIÓN ---
+        // Fecha de inicio: Año, Mes (0-11, Enero es 0, Febrero es 1), Día, Hora, Minuto, Segundo
+        const fechaInicio = new Date(2024, 0, 26, 0, 0, 0); // Ejemplo: 26 de Enero de 2024
 
-        // SCRIPT DEL CARRUSEL AUTOMÁTICO
-        let fotoActual = 1;
-        const totalFotos = 28; // Ciclamos las 28 fotos con la misma extensión .jpg
-        const extension = '.jpg'; 
+        // Configuración del Carrusel
+        const totalFotos = 28; // Número total de fotos que tienes (foto1 a foto28)
+        const extension = '.jpg'; // Extensión de tus archivos de imagen
+        const tiempoCambio = 4000; // Tiempo entre fotos en milisegundos (4 segundos)
+
+        // --- LÓGICA DEL CARRUSEL AUTOMÁTICO (CORREGIDA) ---
+        let fotoActual = 1; // Empezamos en 1 porque el HTML ya carga la foto1
         const imagenElemento = document.getElementById('foto-carrusel');
 
         function cambiarFoto() {
+            // Animación de salida (desvanecer)
             imagenElemento.classList.remove('activa');
             
+            // Esperar a que termine la animación de salida (0.8s) para cambiar la imagen
             setTimeout(() => {
+                // Calcular la siguiente foto
                 fotoActual = (fotoActual % totalFotos) + 1;
+                
+                // Cambiar la fuente de la imagen
                 imagenElemento.src = `fotos/foto${fotoActual}${extension}`;
+                
+                // Animación de entrada (aparecer)
                 imagenElemento.classList.add('activa');
             }, 800); 
         }
-        setInterval(cambiarFoto, 3000); // Cambia cada 3 segundos
+
+        // Iniciar el intervalo de cambio
+        setInterval(cambiarFoto, tiempoCambio);
 
 
-        // ANIMACIÓN CORAZÓN DE GIRASOLES
+        // --- ANIMACIÓN CORAZÓN DE GIRASOLES ---
         const heart = document.getElementById('heart');
         for (let i = 0; i < 150; i++) {
             const f = document.createElement('div');
@@ -307,7 +327,7 @@
             heart.appendChild(f);
         }
 
-        // ANIMACIÓN FLORES CAYENDO
+        // --- ANIMACIÓN FLORES CAYENDO ---
         const fallC = document.getElementById('falling-flowers');
         for (let i = 0; i < 60; i++) {
             const fl = document.createElement('div');
@@ -322,7 +342,7 @@
             fallC.appendChild(fl);
         }
 
-        // ANIMACIÓN FUEGOS ARTIFICIALES
+        // --- ANIMACIÓN FUEGOS ARTIFICIALES ---
         function spark() {
             const fw = document.createElement('div');
             fw.className = 'firework';
@@ -335,7 +355,7 @@
         }
         setInterval(spark, 1500);
 
-        // LÓGICA DEL CONTADOR DE TIEMPO
+        // --- LÓGICA DEL CONTADOR DE TIEMPO ---
         function actualizarReloj() {
             const ahora = new Date();
             let m_años = ahora.getFullYear() - fechaInicio.getFullYear();
