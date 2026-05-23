@@ -236,7 +236,7 @@
         <div class="main-love">Para mi amada Mafer ❤️🌻</div>
         
         <div class="carrusel-container">
-            <img src="fotos/foto1.webp" class="carrusel-foto activa" id="foto-carrusel" alt="Nuestros recuerdos">
+            <img src="" class="carrusel-foto activa" id="foto-carrusel" alt="Nuestros recuerdos">
         </div>
 
         <div id="timer">Calculando...</div>
@@ -279,17 +279,21 @@
 
     <script>
         // --- CONFIGURACIÓN FECHA DE ANIVERSARIO ---
-        // 24 de Febrero de 2026 (Nota: en JavaScript los meses van de 0 a 11, Febrero es el mes 1)
         const fechaInicio = new Date(2026, 1, 24, 0, 0, 0); 
 
-        // Configuración del Carrusel
-        const totalFotos = 43; // Configurado para pasar tus 43 fotos reales
-        const extension = '.webp'; // Extensión adaptada a tus imágenes webp reales
-        const tiempoCambio = 4000; // 4 segundos por foto
+        // --- CONFIGURACIÓN DEL CARRUSEL ---
+        const totalFotos = 43; 
+        const tiempoCambio = 4000; 
+
+        // 🛠️ SI NO SE VEN LAS FOTOS, CAMBIA ESTA LÍNEA ABAJO POR '.png' O '.webp'
+        const extension = '.jpg'; 
 
         // --- LÓGICA DEL CARRUSEL ---
         let fotoActual = 1; 
         const imagenElemento = document.getElementById('foto-carrusel');
+        
+        // Carga la primera foto inmediatamente al abrir la página
+        imagenElemento.src = `fotos/foto${fotoActual}${extension}`;
 
         function cambiarFoto() {
             imagenElemento.classList.remove('activa');
@@ -350,7 +354,7 @@
         function actualizarReloj() {
             const ahora = new Date();
             let m_años = ahora.getFullYear() - fechaInicio.getFullYear();
-            let m_meses = ahora.getMonth() - fechaInicio.getMonth();
+            let m_meses = shiftedMonthDiff(ahora, fechaInicio);
             let m_dias = ahora.getDate() - fechaInicio.getDate();
 
             if (m_dias < 0) {
@@ -374,6 +378,14 @@
             texto += `<br>${h}h ${m}m ${s}s`;
 
             document.getElementById('timer').innerHTML = texto;
+        }
+
+        function shiftedMonthDiff(d1, d2) {
+            var months;
+            months = (d1.getFullYear() - d2.getFullYear()) * 12;
+            months -= d2.getMonth();
+            months += d1.getMonth();
+            return months <= 0 ? 0 : months % 12;
         }
 
         setInterval(actualizarReloj, 1000);
