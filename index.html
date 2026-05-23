@@ -126,7 +126,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             max-width: 88%;
-            max-height: 55vh; /* Ajuste para que se vea el corazón arriba */
+            max-height: 55vh; 
             display: flex;
             flex-direction: column;
         }
@@ -147,6 +147,34 @@
             padding-bottom: 10px;
         }
 
+        /* DISEÑO REVISADO PARA EL CARRUSEL */
+        .carrusel-container {
+            width: 110px;
+            height: 110px;
+            margin: 5px auto 12px auto;
+            position: relative;
+            border-radius: 50%;
+            border: 3px solid var(--sunflower);
+            box-shadow: 0 0 15px rgba(255, 218, 0, 0.4);
+            overflow: hidden;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .carrusel-foto {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .carrusel-foto.activa {
+            opacity: 1;
+        }
+
         /* CONTENEDOR CON SCROLL PARA REGLAS */
         .rules-wrapper {
             overflow-y: auto;
@@ -155,7 +183,6 @@
             margin-top: 5px;
         }
 
-        /* Personalización de la barra de scroll */
         .rules-wrapper::-webkit-scrollbar {
             width: 4px;
         }
@@ -203,12 +230,16 @@
     <div class="messages">
         <div class="main-love">Para mi amada Mafer ❤️🌻</div>
         
+        <div class="carrusel-container">
+            <img src="fotos/foto1.jpg" class="carrusel-foto activa" id="foto-carrusel" alt="Nuestros recuerdos">
+        </div>
+
         <div id="timer">Calculando...</div>
 
         <div class="rules-title">Nuestras Reglas de Oro ✨</div>
         
         <div class="rules-wrapper">
-            <div class="rule-item"><span class="rule-number">1.</span> No amistades de diferente sexo.</div>
+            <div class="rule-item"><span class="rule-number">1.</span> No amistades del mismo sexo.</div>
             <div class="rule-item"><span class="rule-number">2.</span> Respetarse siempre.</div>
             <div class="rule-item"><span class="rule-number">3.</span> Cero groserías.</div>
             <div class="rule-item"><span class="rule-number">4.</span> No vicios.</div>
@@ -244,6 +275,25 @@
     <script>
         const fechaInicio = new Date(2026, 1, 24, 18, 30, 0); 
 
+        // SCRIPT DEL CARRUSEL AUTOMÁTICO
+        let fotoActual = 1;
+        const totalFotos = 28; // Ciclamos las 28 fotos con la misma extensión .jpg
+        const extension = '.jpg'; 
+        const imagenElemento = document.getElementById('foto-carrusel');
+
+        function cambiarFoto() {
+            imagenElemento.classList.remove('activa');
+            
+            setTimeout(() => {
+                fotoActual = (fotoActual % totalFotos) + 1;
+                imagenElemento.src = `fotos/foto${fotoActual}${extension}`;
+                imagenElemento.classList.add('activa');
+            }, 800); 
+        }
+        setInterval(cambiarFoto, 3000); // Cambia cada 3 segundos
+
+
+        // ANIMACIÓN CORAZÓN DE GIRASOLES
         const heart = document.getElementById('heart');
         for (let i = 0; i < 150; i++) {
             const f = document.createElement('div');
@@ -257,6 +307,7 @@
             heart.appendChild(f);
         }
 
+        // ANIMACIÓN FLORES CAYENDO
         const fallC = document.getElementById('falling-flowers');
         for (let i = 0; i < 60; i++) {
             const fl = document.createElement('div');
@@ -271,6 +322,7 @@
             fallC.appendChild(fl);
         }
 
+        // ANIMACIÓN FUEGOS ARTIFICIALES
         function spark() {
             const fw = document.createElement('div');
             fw.className = 'firework';
@@ -283,6 +335,7 @@
         }
         setInterval(spark, 1500);
 
+        // LÓGICA DEL CONTADOR DE TIEMPO
         function actualizarReloj() {
             const ahora = new Date();
             let m_años = ahora.getFullYear() - fechaInicio.getFullYear();
