@@ -125,11 +125,11 @@
             border-radius: 20px;
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            max-width: 88%;
-            max-height: 65vh; /* Aumentado un poco para dar espacio a la foto grande */
+            max-width: 90%;
+            max-height: 75vh; /* Ampliado para dar soporte al nuevo tamaño de las fotos */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Para que el scroll interno funcione bien */
+            overflow: hidden;
         }
 
         .main-love {
@@ -150,24 +150,24 @@
             flex-shrink: 0;
         }
 
-        /* --- CORRECCIÓN: CONTENEDOR DEL CARRUSEL MÁS GRANDE --- */
+        /* --- CORRECCIÓN: FOTO COMPLETA, SIN CÍRCULO Y MÁS GRANDE --- */
         .carrusel-container {
-            width: 220px; /* Tamaño duplicado (antes 110px) */
-            height: 220px; /* Tamaño duplicado (antes 110px) */
+            width: 320px; /* Foto más grande a lo ancho */
+            height: 240px; /* Altura ideal de pantalla */
             margin: 10px auto 15px auto;
             position: relative;
-            border-radius: 50%;
-            border: 4px solid var(--sunflower); /* Borde un poco más grueso */
-            box-shadow: 0 0 20px rgba(255, 218, 0, 0.6);
+            border-radius: 12px; /* Ya no es un círculo (border-radius: 50%), ahora es rectangular con bordes suaves */
+            border: 3px solid var(--sunflower);
+            box-shadow: 0 0 20px rgba(255, 218, 0, 0.5);
             overflow: hidden;
-            background-color: rgba(0,0,0,0.2);
-            flex-shrink: 0; /* Evita que se comprima */
+            background-color: rgba(0,0,0,0.4);
+            flex-shrink: 0;
         }
 
         .carrusel-foto {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* 'contain' hace que la foto se muestre COMPLETA sin recortar nada */
             position: absolute;
             top: 0;
             left: 0;
@@ -185,7 +185,7 @@
             text-align: left;
             padding-right: 5px;
             margin-top: 5px;
-            flex-grow: 1; /* Ocupa el espacio restante */
+            flex-grow: 1;
         }
 
         .rules-wrapper::-webkit-scrollbar {
@@ -280,36 +280,27 @@
 
     <script>
         // --- CONFIGURACIÓN ---
-        // Fecha de inicio: Año, Mes (0-11, Enero es 0, Febrero es 1), Día, Hora, Minuto, Segundo
-        const fechaInicio = new Date(2024, 0, 26, 0, 0, 0); // Ejemplo: 26 de Enero de 2024
+        const fechaInicio = new Date(2024, 0, 26, 0, 0, 0); // Ajusta tu fecha real aquí si deseas
 
         // Configuración del Carrusel
-        const totalFotos = 28; // Número total de fotos que tienes (foto1 a foto28)
-        const extension = '.jpg'; // Extensión de tus archivos de imagen
-        const tiempoCambio = 4000; // Tiempo entre fotos en milisegundos (4 segundos)
+        const totalFotos = 28; 
+        const extension = '.jpg'; 
+        const tiempoCambio = 4000; // 4 segundos por foto
 
-        // --- LÓGICA DEL CARRUSEL AUTOMÁTICO (CORREGIDA) ---
-        let fotoActual = 1; // Empezamos en 1 porque el HTML ya carga la foto1
+        // --- LÓGICA DEL CARRUSEL SIN REPETICIÓN ---
+        let fotoActual = 1; 
         const imagenElemento = document.getElementById('foto-carrusel');
 
         function cambiarFoto() {
-            // Animación de salida (desvanecer)
             imagenElemento.classList.remove('activa');
             
-            // Esperar a que termine la animación de salida (0.8s) para cambiar la imagen
             setTimeout(() => {
-                // Calcular la siguiente foto
                 fotoActual = (fotoActual % totalFotos) + 1;
-                
-                // Cambiar la fuente de la imagen
                 imagenElemento.src = `fotos/foto${fotoActual}${extension}`;
-                
-                // Animación de entrada (aparecer)
                 imagenElemento.classList.add('activa');
             }, 800); 
         }
 
-        // Iniciar el intervalo de cambio
         setInterval(cambiarFoto, tiempoCambio);
 
 
