@@ -26,6 +26,68 @@
             text-align: center;
         }
 
+        /* --- PANTALLA DE BIENVENIDA --- */
+        #welcome-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, var(--bg-bright), var(--bg-dark));
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, visibility 1s;
+        }
+
+        .start-btn {
+            background: transparent;
+            border: 2px solid var(--sunflower);
+            color: var(--sunflower);
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 218, 0, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            background: var(--sunflower);
+            color: var(--bg-dark);
+            transform: scale(1.05);
+        }
+
+        /* --- BOTÓN DE MÚSICA DISCRETO --- */
+        .music-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--sunflower);
+            color: var(--sunflower);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(255, 218, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .music-playing {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- DISEÑO DE LA PÁGINA PRINCIPAL --- */
         .falling-flowers-container {
             position: absolute;
             width: 100%;
@@ -178,7 +240,6 @@
             opacity: 1;
         }
 
-        /* CONTENEDOR CON SCROLL PARA REGLAS */
         .rules-wrapper {
             overflow-y: auto;
             text-align: left;
@@ -219,10 +280,24 @@
             font-weight: bold;
             min-width: 20px;
         }
-
     </style>
 </head>
 <body>
+
+    <!-- 🌻 PANTALLA DE BIENVENIDA -->
+    <div id="welcome-screen">
+        <h2 style="color: var(--sunflower); font-size: 1.5rem; margin: 0;">Un detalle para Mafer 🌻❤️</h2>
+        <button class="start-btn" onclick="startEverything()">Abrir con amor ✨</button>
+    </div>
+
+    <!-- 🎵 REPRODUCTOR DE YOUTUBE OCULTO (Configurado con "Día de Enero") -->
+    <div style="position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none;">
+        <iframe id="youtube-player" 
+                src="https://www.youtube.com/embed/UJ1TCr3r2k8?enablejsapi=1&loop=1&playlist=UJ1TCr3r2k8" 
+                allow="autoplay">
+        </iframe>
+    </div>
+    <button class="music-btn" id="music-toggle" onclick="toggleMusic()">🎵</button>
 
     <div class="falling-flowers-container" id="falling-flowers"></div>
     <div class="firework-container" id="fireworks"></div>
@@ -278,35 +353,74 @@
     </div>
 
     <script>
+        // --- CONTROL DE MÚSICA Y YOUTUBE API ---
+        let player;
+        const musicBtn = document.getElementById('music-toggle');
+        let isPlaying = false;
+
+        // Carga de forma asíncrona la API de reproductor de YouTube
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                events: { 'onReady': () => console.log("Canción cargada correctamente.") }
+            });
+        }
+
+        // Se ejecuta cuando Mafer hace clic en "Abrir con amor"
+        function startEverything() {
+            const welcome = document.getElementById('welcome-screen');
+            welcome.style.opacity = '0';
+            setTimeout(() => {
+                welcome.style.visibility = 'hidden';
+            }, 1000);
+
+            // Iniciar reproducción automática gracias al clic
+            if (player && typeof player.playVideo === 'function') {
+                player.playVideo();
+                musicBtn.classList.add('music-playing');
+                isPlaying = true;
+            }
+        }
+
+        function toggleMusic() {
+            if (!player) return;
+            if (!isPlaying) {
+                player.playVideo();
+                musicBtn.classList.add('music-playing');
+                isPlaying = true;
+            } else {
+                player.pauseVideo();
+                musicBtn.classList.remove('music-playing');
+                isPlaying = false;
+            }
+        }
+
         // --- CONFIGURACIÓN FECHA DE ANIVERSARIO ---
         const fechaInicio = new Date(2026, 1, 24, 0, 0, 0); 
 
         // --- CONFIGURACIÓN DEL CARRUSEL ---
         const totalFotos = 43; 
         const tiempoCambio = 4000; 
-
-        // 🛠️ SI NO SE VEN LAS FOTOS, CAMBIA ESTA LÍNEA ABAJO POR '.png' O '.webp'
         const extension = '.jpg'; 
 
-        // --- LÓGICA DEL CARRUSEL ---
         let fotoActual = 1; 
         const imagenElemento = document.getElementById('foto-carrusel');
         
-        // Carga la primera foto inmediatamente al abrir la página
         imagenElemento.src = `fotos/foto${fotoActual}${extension}`;
 
         function cambiarFoto() {
             imagenElemento.classList.remove('activa');
-            
             setTimeout(() => {
                 fotoActual = (fotoActual % totalFotos) + 1;
                 imagenElemento.src = `fotos/foto${fotoActual}${extension}`;
                 imagenElemento.classList.add('activa');
             }, 800); 
         }
-
         setInterval(cambiarFoto, tiempoCambio);
-
 
         // --- ANIMACIÓN CORAZÓN DE GIRASOLES ---
         const heart = document.getElementById('heart');
