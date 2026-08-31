@@ -290,7 +290,7 @@
         <button class="start-btn" onclick="startEverything()">Abrir con amor ✨</button>
     </div>
 
-    <!-- 🎵 REPRODUCTOR DE YOUTUBE OCULTO (Configurado con "Día de Enero") -->
+    <!-- 🎵 REPRODUCTOR DE YOUTUBE OCULTO -->
     <div style="position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none;">
         <iframe id="youtube-player" 
                 src="https://www.youtube.com/embed/UJ1TCr3r2k8?enablejsapi=1&loop=1&playlist=UJ1TCr3r2k8" 
@@ -358,7 +358,6 @@
         const musicBtn = document.getElementById('music-toggle');
         let isPlaying = false;
 
-        // Carga de forma asíncrona la API de reproductor de YouTube
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -370,7 +369,6 @@
             });
         }
 
-        // Se ejecuta cuando Mafer hace clic en "Abrir con amor"
         function startEverything() {
             const welcome = document.getElementById('welcome-screen');
             welcome.style.opacity = '0';
@@ -378,7 +376,6 @@
                 welcome.style.visibility = 'hidden';
             }, 1000);
 
-            // Iniciar reproducción automática gracias al clic
             if (player && typeof player.playVideo === 'function') {
                 player.playVideo();
                 musicBtn.classList.add('music-playing');
@@ -399,8 +396,9 @@
             }
         }
 
-        // --- CONFIGURACIÓN FECHA DE ANIVERSARIO ---
+        // --- FECHAS CONGELADAS (24 Feb 2026 -> 24 May 2026 = 3 Meses Exactos) ---
         const fechaInicio = new Date(2026, 1, 24, 0, 0, 0); 
+        const fechaCongelada = new Date(2026, 4, 24, 0, 0, 0); 
 
         // --- CONFIGURACIÓN DEL CARRUSEL ---
         const totalFotos = 43; 
@@ -464,9 +462,10 @@
         }
         setInterval(spark, 1500);
 
-        // --- LÓGICA DEL CONTADOR DE TIEMPO ---
-        function actualizarReloj() {
-            const ahora = new Date();
+        // --- LÓGICA DEL CONTADOR FIJO EN 3 MESES ---
+        function calcularRelojFijo() {
+            const ahora = fechaCongelada;
+            
             let m_años = ahora.getFullYear() - fechaInicio.getFullYear();
             let m_meses = shiftedMonthDiff(ahora, fechaInicio);
             let m_dias = ahora.getDate() - fechaInicio.getDate();
@@ -502,8 +501,7 @@
             return months <= 0 ? 0 : months % 12;
         }
 
-        setInterval(actualizarReloj, 1000);
-        actualizarReloj();
+        calcularRelojFijo();
     </script>
 </body>
 </html>
